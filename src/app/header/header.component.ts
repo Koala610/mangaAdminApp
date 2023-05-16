@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginDataService } from '../login-data.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -8,17 +9,12 @@ import { LoginDataService } from '../login-data.service';
 })
 export class HeaderComponent implements OnInit{
 
-  isLogged: boolean = false
-
-  constructor(private loginDataService: LoginDataService) {}
+  constructor(public loginDataService: LoginDataService, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.loginDataService.currentStatus.subscribe(value => {
-      this.isLogged = value
-    });
   }
 
   logout() {
-    this.loginDataService.changeStatus(false)
+    this.authService.logout()
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth.service';
 import { LoginDataService } from './login-data.service';
 import { Observable, map } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,6 @@ import { Observable, map } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  TOKEN_IDENTIFIER: string = "token";
   title: string = 'manga-admin-app';
   isLogged: boolean = false;
   username: string = "";
@@ -17,30 +17,25 @@ export class AppComponent implements OnInit{
   getCurrentLoginState: Observable<boolean> = this.loginDataService.currentStatus.pipe()
 
   ngOnInit(): void {
-    const token: String | null = localStorage.getItem(this.TOKEN_IDENTIFIER);
+    const token: String | null = localStorage.getItem(this.authService.TOKEN_IDENTIFIER);
     if (token) {
-      this.isLogged = true;
       this.loginDataService.changeStatus(true)
     }
   }
 
-  constructor(private authService: AuthService, public loginDataService: LoginDataService) {}
+  constructor(private authService: AuthService, public loginDataService: LoginDataService, private router: Router) {}
 
   login() {
-    this.authService.login(this.username, this.password).subscribe((data) => {
-      localStorage.setItem(this.TOKEN_IDENTIFIER, data.access_token);
-
-      this.isLogged = true
-      this.loginDataService.changeStatus(true)
-      this.username = ""
-      this.password = ""
-    })
+    this.authService.login(this.username, this.password);
+    this.username = "";
+    this.password = "";
+    if (this.router.url === "/") {
+      this.router.navigate(["/core"])
+    }
   }
 
   logout() {
-    this.isLogged = false
-      this.loginDataService.changeStatus(false)
-    localStorage.removeItem(this.TOKEN_IDENTIFIER)
+    this.authService.logout()
   }
 
 }
