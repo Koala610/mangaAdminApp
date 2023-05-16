@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth.service';
+import { LoginDataService } from './login-data.service';
+import { Observable, map } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,21 +14,24 @@ export class AppComponent implements OnInit{
   isLogged: boolean = false;
   username: string = "";
   password: string = "";
+  getCurrentLoginState: Observable<boolean> = this.loginDataService.currentStatus.pipe()
 
   ngOnInit(): void {
     const token: String | null = localStorage.getItem(this.TOKEN_IDENTIFIER);
     if (token) {
       this.isLogged = true;
+      this.loginDataService.changeStatus(true)
     }
   }
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, public loginDataService: LoginDataService) {}
 
   login() {
     this.authService.login(this.username, this.password).subscribe((data) => {
       localStorage.setItem(this.TOKEN_IDENTIFIER, data.access_token);
 
       this.isLogged = true
+      this.loginDataService.changeStatus(true)
       this.username = ""
       this.password = ""
     })
@@ -34,6 +39,8 @@ export class AppComponent implements OnInit{
 
   logout() {
     this.isLogged = false
+      this.loginDataService.changeStatus(false)
     localStorage.removeItem(this.TOKEN_IDENTIFIER)
   }
+
 }

@@ -1,5 +1,7 @@
+<app-header></app-header>
+
 <div class="container d-flex justify-content-center align-items-center">
-  <form *ngIf="!isLogged" style="max-width: 400px; padding: 0 auto;">
+  <form *ngIf="!(loginDataService.currentStatus | async)" style="max-width: 400px; padding: 0 auto;">
     <h1 >Login form</h1>
     <div class="form-group">
       <label for="login">Login</label>
@@ -18,6 +20,6 @@
   </form>
 </div>
 
-<div *ngIf="isLogged">
+<div *ngIf="loginDataService.currentStatus | async">
   <router-outlet></router-outlet>
 </div>

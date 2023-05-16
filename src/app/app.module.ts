@@ -9,13 +9,15 @@ import { SupportComponent } from './support/support.component';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthInterceptor } from './authInterceptor';
 import {FormsModule} from '@angular/forms';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CoreComponent,
     NotificationComponent,
-    SupportComponent
+    SupportComponent,
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
