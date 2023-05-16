@@ -6,6 +6,9 @@ import { AppComponent } from './app.component';
 import { CoreComponent } from './core/core.component';
 import { NotificationComponent } from './notification/notification.component';
 import { SupportComponent } from './support/support.component';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from './authInterceptor';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,9 +19,15 @@ import { SupportComponent } from './support/support.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
