@@ -7,7 +7,16 @@ import {HttpClient} from '@angular/common/http';
 })
 export class CoreService {
 
-  constructor() { }
+  BASE_URL = "http://localhost:8080"
 
+  constructor(private client: HttpClient) { }
+
+  sendBroadcastMessage(message: String) {
+    this.client.post<object>(`${this.BASE_URL}/notify/all/`, {
+            "data": {
+              "message": message
+            }
+        }).subscribe();
+  }
   
 }

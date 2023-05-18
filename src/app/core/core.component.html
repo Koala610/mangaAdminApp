@@ -1,1 +1,15 @@
-<p>core works!</p>
+<h2 class="text-center">Core</h2>
+
+<form (ngSubmit)="submitForm()" class="container mt-5">
+    <h3>Send broadcast message</h3>
+    <div class="row">
+      <div class="col-md-4 form-group">
+        <label for="inputData">Message:</label>
+        <input type="text" id="inputData" name="inputData" [(ngModel)]="formData.message" class="form-control" required>
+      </div>
+      <div class="col-md-10 mt-2">
+        <button type="submit" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+  </form>
+  
