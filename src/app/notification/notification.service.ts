@@ -11,11 +11,19 @@ export class NotificationService {
 
   constructor(private client: HttpClient) { }
 
-  changeServiceWorkingState(): Observable<String> {
-    return this.client.get<String>(`${this.BASE_URL}/notification/service/workingState`)
+  changeServiceWorkingState(): Observable<boolean> {
+    return this.client.get<boolean>(`${this.BASE_URL}/notification/service/working_state`)
   }
 
-  changeCheckingDelay(delay: number): Observable<String> {
-    return this.client.get<String>(`${this.BASE_URL}/notification/service?${delay}`)
+  getServiceWorkingState(): Observable<boolean> {
+    return this.client.get<boolean>(`${this.BASE_URL}/notification/service/working_state?change=0`)
+  }
+
+  changeCheckingDelay(delay: number): Observable<number> {
+    return this.client.get<number>(`${this.BASE_URL}/notification/service?update_frequency=${delay}`)
+  }
+
+  getCheckingDelay(): Observable<number> {
+    return this.client.get<number>(`${this.BASE_URL}/notification/service?change=0`)
   }
 }

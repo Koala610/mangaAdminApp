@@ -1,8 +1,59 @@
 <h2 class="text-center">Core</h2>
 
-<form (ngSubmit)="submitForm()" class="container mt-5">
+<div class="d-flex">
+    <div class="container">
+        <div class="">
+          <div class="list-group">
+            <button class="list-group-item" (click)="showUserList()">
+              Users
+            </button>
+          </div>
+        </div>
+        <div class="">
+          <div *ngIf="isUserListVisible">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of displayedUsers">
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.name }}</td>
+                  <td><button class="btn btn-primary" (click)="sendMessage(user.id)">Send message</button></td>
+                </tr>
+              </tbody>
+            </table>
+          <nav aria-label="User Pagination">
+            <ul class="pagination">
+              <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" (click)="goToPage(1)">First</a>
+              </li>
+              <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
+                <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+              </li>
+              <li class="page-item" [ngClass]="{ 'active': page === currentPage }" *ngFor="let page of pages">
+                <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+              </li>
+              <li class="page-item" [ngClass]="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+              </li>
+              <li class="page-item" [ngClass]="{ 'disabled': currentPage === totalPages }">
+                <a class="page-link" (click)="goToPage(totalPages)">Last</a>
+              </li>
+            </ul>
+          </nav>
+          </div>
+
+      </div>
+    </div>
+
+  <form (ngSubmit)="submitForm()" class="container">
     <h3>Send broadcast message</h3>
-    <div class="row">
+    <div class="col-md-6">
       <div class="col-md-4 form-group">
         <label for="inputData">Message:</label>
         <input type="text" id="inputData" name="inputData" [(ngModel)]="formData.message" class="form-control" required>
@@ -12,4 +63,5 @@
       </div>
     </div>
   </form>
-  
+    
+</div>
