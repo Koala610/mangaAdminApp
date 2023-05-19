@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../auth/auth.service';
 import { User } from './core.model';
 import { CoreService } from './core.service';
+import { UiService } from '../ui/ui.service';
 
 @Component({
   selector: 'app-core',
@@ -21,7 +22,7 @@ export class CoreComponent implements OnInit {
   totalPages: number = 0;
   pages: number[] = [];
 
-  constructor(private coreService: CoreService, private snackBar: MatSnackBar, private authService: AuthService) {}
+  constructor(private coreService: CoreService, private uiService: UiService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.totalPages = Math.ceil(this.users.length / this.pageSize);
@@ -31,10 +32,10 @@ export class CoreComponent implements OnInit {
 
   submitForm(): void {
     this.coreService.sendBroadcastMessage(this.formData.message).subscribe(
-      (response) => this.showPopUpWindow("Успех"),
+      (response) => this.uiService.showPopUpWindow("Успех"),
       (error) => {
         if (error.status == 401) {
-          this.showPopUpWindow("Ошибка")
+          this.uiService.showPopUpWindow("Ошибка")
           this.authService.logout()
         }
       }
@@ -62,14 +63,12 @@ export class CoreComponent implements OnInit {
   sendMessage(user_id: number): void {
     let message: string | null = prompt("Введите сообщение")
     if (message === null) {
-      this.snackBar.open('Ошибка', 'Close', {
-        duration: 5000,
-      });
+      this.uiService.showPopUpWindow("Ошибка")
       return
     }
     this.coreService.sendMessage(user_id, message).subscribe(
-      (response) => this.showPopUpWindow("Успех"),
-      (error) => this.showPopUpWindow("Ошибка")
+      (response) => this.uiService.showPopUpWindow("Успех"),
+      (error) => this.uiService.showPopUpWindow("Ошибка")
     )
   }
 
@@ -78,11 +77,5 @@ export class CoreComponent implements OnInit {
     for (let i = 1; i <= this.totalPages; i++) {
       this.pages.push(i);
     }
-  }
-
-  private showPopUpWindow(message: string, duration: number = 5000) {
-      this.snackBar.open(message, 'Close', {
-        duration: duration,
-      });
   }
 }
