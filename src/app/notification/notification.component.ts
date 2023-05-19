@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationService } from './notification.service';
 import { UiService } from '../ui/ui.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-notification',
@@ -12,14 +13,14 @@ export class NotificationComponent implements OnInit {
   toggleValue: boolean = false
   frequency: string = ''
 
-  constructor(private service: NotificationService, private uiService: UiService) {}
+  constructor(private service: NotificationService, private uiService: UiService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.service.getServiceWorkingState().subscribe((result) => this.toggleValue = result,
-      (error) => this.uiService.showPopUpWindow("Ошибка при получении статуса сервиса")
+      (error) => this.showErrorMessageAndLogout("Ошибка при получении статуса сервиса", error)
     )
     this.service.getCheckingDelay().subscribe((result) => this.frequency = result.toString(),
-      (error) => this.uiService.showPopUpWindow("Ошибка при получении частоты")
+      (error) => this.showErrorMessageAndLogout("Ошибка при получении частоты", error)
     )
   }
 
@@ -28,7 +29,7 @@ export class NotificationComponent implements OnInit {
         this.frequency = result.toString()
         this.uiService.showPopUpWindow("Успех")
       },
-      (error) => this.uiService.showPopUpWindow("Ошибка")
+      (error) => this.showErrorMessageAndLogout("Ошибка", error)
     )
   }
 
@@ -38,8 +39,14 @@ export class NotificationComponent implements OnInit {
         this.toggleValue = result
         this.uiService.showPopUpWindow("Успех")
       },
-      (error) => this.uiService.showPopUpWindow("Ошибка")
+      (error) => this.showErrorMessageAndLogout("Ошибка", error)
     )
+  }
 
+  showErrorMessageAndLogout(message: string, error: any) {
+    this.uiService.showPopUpWindow(message)
+    if (error.status == 401) {
+      this.authService.logout()
+    }
   }
 }
