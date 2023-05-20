@@ -1,1 +1,28 @@
-<p>support works!</p>
+<h2 class="text-center">Support</h2>
+<div class="container">
+    <h3>Messages</h3>
+    <div class="form-group">
+      <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <button class="btn btn-primary" *ngFor="let i of filterOptions" (click)="setFilteredMessages(i)">{{i}}</button>
+        <button class="btn btn-primary" (click)="changeMessageVisibility()">Hide</button>
+      </div>
+    </div>
+  
+<table class="table table-striped" *ngIf="areMessagesShown">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Message</th>
+        <th>Response</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of filteredMessages">
+        <td>{{ user.id }}</td>
+        <td>{{ user.message }}</td>
+        <td>{{ user.response }}</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+  

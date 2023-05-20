@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth/auth.service';
 import { LoginDataService } from './login-data.service';
-import { Observable, map } from 'rxjs';
+import { Observable, map, timer } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -21,6 +21,7 @@ export class AppComponent implements OnInit{
     if (token) {
       this.loginDataService.changeStatus(true)
     }
+    timer(0, 300000).subscribe(() => this.authService.echo())
   }
 
   constructor(private authService: AuthService, public loginDataService: LoginDataService, private router: Router) {}

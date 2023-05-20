@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {AuthData} from './models'
+import {Admin, AuthData} from './models'
 import { LoginDataService } from '../login-data.service';
 
 @Injectable({
@@ -21,11 +20,31 @@ export class AuthService {
         }).subscribe((item) => {
           localStorage.setItem(this.TOKEN_IDENTIFIER, item.access_token);
           this.loginDataService.changeStatus(true);
+          this.client.get<Admin>(`${this.BASE_URL}/admin`).subscribe(
+            {
+              next: (v) => this.loginDataService.changeAdmin(v)
+            }
+          )
         });
   }
 
   logout() {
     this.loginDataService.changeStatus(false)
     localStorage.removeItem(this.TOKEN_IDENTIFIER)
+  }
+
+  echo() {
+    console.log("Sending request to Core service...")
+    this.client.get(`${this.BASE_URL}/echo`).subscribe(
+      {
+        next: (v) => console.log("Core service in normal state"),
+        error: (e) => {
+          if (e.status == 401) {
+            console.log("Authentication error")
+            this.logout()
+          }
+        }
+      }
+    )
   }
 }

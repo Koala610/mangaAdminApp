@@ -29,7 +29,10 @@ export class NotificationComponent implements OnInit {
         this.frequency = result.toString()
         this.uiService.showPopUpWindow("Успех")
       },
-      (error) => this.showErrorMessageAndLogout("Ошибка", error)
+      (error) => { 
+        this.showErrorMessageAndLogout("Ошибка", error)
+        this.frequency = ""
+      }
     )
   }
 
@@ -39,7 +42,10 @@ export class NotificationComponent implements OnInit {
         this.toggleValue = result
         this.uiService.showPopUpWindow("Успех")
       },
-      (error) => this.showErrorMessageAndLogout("Ошибка", error)
+      (error) => { 
+        this.showErrorMessageAndLogout("Ошибка", error)
+        this.toggleValue = !this.toggleValue
+      }
     )
   }
 
