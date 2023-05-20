@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, firstValueFrom} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import { User } from './core.model';
+import { LoginDataService } from '../login-data.service';
+import { Admin } from '../auth/models';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,7 @@ export class CoreService {
 
   BASE_URL = "http://localhost:8080"
 
-  constructor(private client: HttpClient) { }
+  constructor(private client: HttpClient, private loginDataService: LoginDataService) { }
 
   sendBroadcastMessage(message: String) {
     return this.client.post<object>(`${this.BASE_URL}/notify/all/`, {
@@ -30,6 +32,22 @@ export class CoreService {
               "message": message
             }
         });
+  }
+
+  async changeUserId(userId: string) {
+    let admin: Admin =  await firstValueFrom(this.loginDataService.currentAdmin)
+      return this.client.post<object>(`${this.BASE_URL}/admin/user_id`, {
+          "id": admin.id,
+          "user_id": userId
+      }).subscribe(
+        {
+          next: (v) => { 
+            admin.user_id = userId
+            this.loginDataService.changeAdmin(admin)
+          },
+          error: (e) => console.log(e)
+        }
+      )
   }
   
 }

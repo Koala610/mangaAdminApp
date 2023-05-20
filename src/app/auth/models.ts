@@ -4,6 +4,7 @@ export interface AuthData {
 }
 
 export interface Admin {
+    id: number | null,
     user_id: string | null,
     username: string
 }

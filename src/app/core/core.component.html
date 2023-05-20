@@ -1,70 +1,75 @@
 <h2 class="text-center">Core</h2>
 
-<div>
-  <h3>Your Telegram id: {{admin?.user_id !== null ? admin?.user_id : "None"}}</h3>
-</div>
-<div class="d-flex">
-    <div class="container">
-        <div class="">
-          <div class="list-group">
-            <button class="list-group-item" (click)="showUserList()">
-              Users
-            </button>
-          </div>
+<div class="container-fluid">
+  <div class="container">
+    <h3 class="mr-auto flex-grow-1">Your User ID: {{ (loginDataService.currentAdmin | async)?.user_id !== null ? (loginDataService.currentAdmin | async)?.user_id : 'None' }}</h3>
+    <button class="btn btn-primary ml-auto " (click)="changeUserId()">Change User ID</button>
+  </div>
+
+  <div class="container">
+    <h1></h1>
+  </div>
+  <div class="d-flex mt-10">
+      <div class="container">
+            <div class="list-group">
+              <button class="list-group-item" (click)="showUserList()">
+                Users
+              </button>
+            </div>
+          <div class="">
+            <div *ngIf="isUserListVisible">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of displayedUsers">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.name }}</td>
+                    <td><button class="btn btn-primary" (click)="sendMessage(user.id)">Send message</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            <nav aria-label="User Pagination">
+              <ul class="pagination">
+                <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
+                  <a class="page-link" (click)="goToPage(1)">First</a>
+                </li>
+                <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
+                  <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
+                </li>
+                <li class="page-item" [ngClass]="{ 'active': page === currentPage }" *ngFor="let page of pages">
+                  <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" [ngClass]="{ 'disabled': currentPage === totalPages }">
+                  <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
+                </li>
+                <li class="page-item" [ngClass]="{ 'disabled': currentPage === totalPages }">
+                  <a class="page-link" (click)="goToPage(totalPages)">Last</a>
+                </li>
+              </ul>
+            </nav>
+            </div>
+
         </div>
-        <div class="">
-          <div *ngIf="isUserListVisible">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let user of displayedUsers">
-                  <td>{{ user.id }}</td>
-                  <td>{{ user.name }}</td>
-                  <td><button class="btn btn-primary" (click)="sendMessage(user.id)">Send message</button></td>
-                </tr>
-              </tbody>
-            </table>
-          <nav aria-label="User Pagination">
-            <ul class="pagination">
-              <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
-                <a class="page-link" (click)="goToPage(1)">First</a>
-              </li>
-              <li class="page-item" [ngClass]="{ 'disabled': currentPage === 1 }">
-                <a class="page-link" (click)="goToPage(currentPage - 1)">Previous</a>
-              </li>
-              <li class="page-item" [ngClass]="{ 'active': page === currentPage }" *ngFor="let page of pages">
-                <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
-              </li>
-              <li class="page-item" [ngClass]="{ 'disabled': currentPage === totalPages }">
-                <a class="page-link" (click)="goToPage(currentPage + 1)">Next</a>
-              </li>
-              <li class="page-item" [ngClass]="{ 'disabled': currentPage === totalPages }">
-                <a class="page-link" (click)="goToPage(totalPages)">Last</a>
-              </li>
-            </ul>
-          </nav>
-          </div>
+      </div>
 
+    <form (ngSubmit)="submitForm()" class="container">
+      <h3>Send broadcast message</h3>
+      <div class="col-md-6">
+        <div class="col-md-4 form-group">
+          <label for="inputData">Message:</label>
+          <input type="text" id="inputData" name="inputData" [(ngModel)]="formData.message" class="form-control" required>
+        </div>
+        <div class="col-md-10 mt-2">
+          <button type="submit" class="btn btn-primary">Send</button>
+        </div>
       </div>
-    </div>
-
-  <form (ngSubmit)="submitForm()" class="container">
-    <h3>Send broadcast message</h3>
-    <div class="col-md-6">
-      <div class="col-md-4 form-group">
-        <label for="inputData">Message:</label>
-        <input type="text" id="inputData" name="inputData" [(ngModel)]="formData.message" class="form-control" required>
-      </div>
-      <div class="col-md-10 mt-2">
-        <button type="submit" class="btn btn-primary">Send</button>
-      </div>
-    </div>
-  </form>
-    
+    </form>
+      
+  </div>
 </div>

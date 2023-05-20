@@ -20,23 +20,22 @@ export class CoreComponent implements OnInit {
   users: User[] = [];
   displayedUsers: any[] = [];
   currentPage: number = 1;
-  pageSize: number = 1;
+  pageSize: number = 10;
   totalPages: number = 0;
   pages: number[] = [];
-  admin?: Admin
+  // admin?: Admin
 
   constructor(
     private coreService: CoreService,
     private uiService: UiService,
     private authService: AuthService,
     public loginDataService: LoginDataService
-  ) {}
+  ) {  }
 
   ngOnInit(): void {
     this.totalPages = Math.ceil(this.users.length / this.pageSize);
     this.updateDisplayedUsers();
     this.generatePageNumbers();
-    this.getAdmin()
   }
 
   submitForm(): void {
@@ -78,12 +77,12 @@ export class CoreComponent implements OnInit {
     )
   }
 
-  getAdmin() {
-    this.loginDataService.currentAdmin.subscribe(
-      {
-        next: (value) => this.admin = value
-      }
-    )
+  changeUserId() {
+    let userId = prompt("Enter User ID")
+    if (userId === undefined || userId === null || userId === "") {
+      return
+    }
+    this.coreService.changeUserId(userId)
   }
 
   private generatePageNumbers(): void {
@@ -93,7 +92,7 @@ export class CoreComponent implements OnInit {
     }
   }
 
-  showErrorMessageAndLogout(message: string, error: any) {
+  private showErrorMessageAndLogout(message: string, error: any) {
     this.uiService.showPopUpWindow(message)
     if (error.status == 401) {
       this.authService.logout()

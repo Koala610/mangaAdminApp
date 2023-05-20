@@ -8,7 +8,7 @@ import { Admin } from './auth/models';
 export class LoginDataService {
 
   private statusSource = new BehaviorSubject<boolean>(false);
-  private adminSource = new BehaviorSubject<Admin>({user_id: null, username: ""});
+  private adminSource = new BehaviorSubject<Admin>({user_id: null, username: "", id: null});
   currentStatus = this.statusSource.asObservable();
   currentAdmin = this.adminSource.asObservable();
 
