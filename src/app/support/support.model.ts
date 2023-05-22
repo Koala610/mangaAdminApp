@@ -7,3 +7,8 @@ export interface Message {
     is_processed: boolean,
     response: string
 }
+
+export interface Support {
+    id: number,
+    user_id: number,
+}

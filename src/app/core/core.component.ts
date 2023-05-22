@@ -7,6 +7,8 @@ import { CoreService } from './core.service';
 import { UiService } from '../ui/ui.service';
 import { Admin } from '../auth/models';
 import { LoginDataService } from '../login-data.service';
+import { SupportService } from '../support/support.service';
+import { Observable, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-core',
@@ -18,7 +20,7 @@ export class CoreComponent implements OnInit {
   formData = { message: '' };
   isUserListVisible: boolean = false
   users: User[] = [];
-  displayedUsers: any[] = [];
+  displayedUsers: User[] = [];
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 0;
@@ -29,8 +31,9 @@ export class CoreComponent implements OnInit {
     private coreService: CoreService,
     private uiService: UiService,
     private authService: AuthService,
+    private supportService: SupportService,
     public loginDataService: LoginDataService
-  ) {  }
+  ) { }
 
   ngOnInit(): void {
     this.totalPages = Math.ceil(this.users.length / this.pageSize);
@@ -56,9 +59,13 @@ export class CoreComponent implements OnInit {
     }
   }
 
-  updateDisplayedUsers(): void {
+  async updateDisplayedUsers() {
     const startIndex: number = (this.currentPage - 1) * this.pageSize;
     this.coreService.getUsersInRange(startIndex, this.pageSize).subscribe((users) => {
+      users.map(async (user) => {
+        user.is_support = await firstValueFrom(this.coreService.checkIfUserIsSupport(user.id))
+        return user
+      })
       this.displayedUsers = users
     },
       (error) => this.showErrorMessageAndLogout("Ошибка", error)
@@ -77,12 +84,24 @@ export class CoreComponent implements OnInit {
     )
   }
 
-  changeUserId() {
+  makeSupport(userId: number) {
+    this.supportService.makeSupport(userId).subscribe({
+      next: (v) => this.uiService.showPopUpWindow("Успех"),
+      error: (e) => this.uiService.showPopUpWindow("Ошибка")
+    })
+  }
+
+  async changeUserId() {
     let userId = prompt("Enter User ID")
     if (userId === undefined || userId === null || userId === "") {
       return
     }
     this.coreService.changeUserId(userId)
+    this.authService.setAdminEntities(parseInt(userId))
+  }
+
+  getValueFromLocalStorage(key: string) {
+    return JSON.parse(localStorage.getItem("admin") || "")
   }
 
   private generatePageNumbers(): void {
@@ -99,3 +118,7 @@ export class CoreComponent implements OnInit {
     }
   }
 }
+function firstValueFor(arg0: Observable<boolean>) {
+  throw new Error('Function not implemented.');
+}
+

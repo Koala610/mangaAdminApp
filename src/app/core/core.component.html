@@ -2,7 +2,7 @@
 
 <div class="container-fluid">
   <div class="container">
-    <h3 class="mr-auto flex-grow-1">Your User ID: {{ (loginDataService.currentAdmin | async)?.user_id !== null ? (loginDataService.currentAdmin | async)?.user_id : 'None' }}</h3>
+    <h3 class="mr-auto flex-grow-1">Your User ID: {{getValueFromLocalStorage("admin").user_id}}</h3>
     <button class="btn btn-primary ml-auto " (click)="changeUserId()">Change User ID</button>
   </div>
 
@@ -23,6 +23,8 @@
                   <tr>
                     <th>ID</th>
                     <th>Name</th>
+                    <th>Is Support</th>
+                    <th></th>
                     <th></th>
                   </tr>
                 </thead>
@@ -30,7 +32,9 @@
                   <tr *ngFor="let user of displayedUsers">
                     <td>{{ user.id }}</td>
                     <td>{{ user.name }}</td>
+                    <td>{{ user.is_support }}</td>
                     <td><button class="btn btn-primary" (click)="sendMessage(user.id)">Send message</button></td>
+                    <td><button class="btn btn-primary" *ngIf="!user.is_support" (click)="makeSupport(user.id)">Make support</button></td>
                   </tr>
                 </tbody>
               </table>

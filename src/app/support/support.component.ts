@@ -12,6 +12,7 @@ import { AuthService } from '../auth/auth.service';
 export class SupportComponent implements OnInit {
 
   filteredMessages: Message[] = []
+  public currentFilter: MessageFilter = MessageFilter.All
   areMessagesShown: boolean = false
   messageFilterClass = MessageFilter
 
@@ -23,6 +24,7 @@ export class SupportComponent implements OnInit {
 
   setFilteredMessages(filterString: string): void {
     let filter: MessageFilter = MessageFilter[filterString as keyof typeof MessageFilter]
+    this.currentFilter = filter
     this.areMessagesShown = true
     if (filter === MessageFilter.Processed) {
       this.supportService.getProcessedMessages().subscribe(
@@ -59,6 +61,24 @@ export class SupportComponent implements OnInit {
 
   changeMessageVisibility() {
     this.areMessagesShown = false
+  }
+
+  answerMessage(messageId: number, userId: number) {
+    let response: string | null = prompt("Введите ответ на сообщение")
+    if (response === null) {
+      this.uiService.showPopUpWindow("Ошибка. Пустое сообщение")
+      return
+    }
+
+    let support = JSON.parse(localStorage.getItem("support") || "")
+    this.supportService.answerMessage(messageId, support.id, response).subscribe({
+      next: (v) => {
+        this.setFilteredMessages(this.currentFilter)
+        this.uiService.showPopUpWindow("Успех")
+      },
+      error: (e) => this.uiService.showPopUpWindow("Ошибка")
+    })
+
   }
 
   get filterOptions(): string[] {
