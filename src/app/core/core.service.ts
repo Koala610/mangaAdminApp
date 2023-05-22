@@ -4,13 +4,14 @@ import {HttpClient} from '@angular/common/http';
 import { User } from './core.model';
 import { LoginDataService } from '../login-data.service';
 import { Admin } from '../auth/models';
+import { enviroment } from '../config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CoreService {
 
-  BASE_URL = "http://localhost:8080"
+  BASE_URL = enviroment.coreServiceUrl
 
   constructor(private client: HttpClient, private loginDataService: LoginDataService) { }
 
@@ -24,6 +25,10 @@ export class CoreService {
 
   getUsersInRange(offset: number, limit: number) {
     return this.client.get<User[]>(`${this.BASE_URL}/user?offset=${offset}&limit=${limit}`)
+  }
+
+  checkIfUserIsSupport(userId: number) {
+    return this.client.get<boolean>(`${this.BASE_URL}/user/${userId}/is_support`)
   }
 
   sendMessage(user_id: number, message: String) {
@@ -44,6 +49,7 @@ export class CoreService {
           next: (v) => { 
             admin.user_id = userId
             this.loginDataService.changeAdmin(admin)
+            localStorage.setItem("admin", JSON.stringify(admin))
           },
           error: (e) => console.log(e)
         }

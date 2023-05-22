@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import { enviroment } from '../config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationService {
 
-  BASE_URL = 'http://localhost:8081'
+  BASE_URL = enviroment.notificationServiceUrl
 
   constructor(private client: HttpClient) { }
 

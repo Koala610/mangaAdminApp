@@ -14,13 +14,19 @@
         <th>ID</th>
         <th>Message</th>
         <th>Response</th>
+        <th>User ID</th>
+        <th>Support ID</th>
+        <th *ngIf="currentFilter === messageFilterClass.Unprocessed"></th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let user of filteredMessages">
-        <td>{{ user.id }}</td>
-        <td>{{ user.message }}</td>
-        <td>{{ user.response }}</td>
+    <tr *ngFor="let message of filteredMessages">
+        <td>{{ message.id }}</td>
+        <td>{{ message.message }}</td>
+        <td>{{ message.response }}</td>
+        <td>{{ message.user_id }}</td>
+        <td>{{ message.support_id }}</td>
+        <td *ngIf="!message.is_processed && currentFilter === messageFilterClass.Unprocessed"> <button class="btn btn-primary" (click)="answerMessage(message.id, message.user_id)">Answer</button> </td>
     </tr>
     </tbody>
 </table>
